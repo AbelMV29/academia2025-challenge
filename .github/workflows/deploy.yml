@@ -47,7 +47,8 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         uses: Ilshidur/action-discord@master
-        args: 'Deployment completed successfully! Release: ${{ github.event.release.tag_name }} - Commit: ${{ github.sha }}'
+        with:
+          args: 'Deployment completed successfully! Release: ${{ github.event.release.tag_name }} - Commit: ${{ github.sha }}'
 
       - name: Slack Notification
         uses: slackapi/slack-github-action@v2.1.1
