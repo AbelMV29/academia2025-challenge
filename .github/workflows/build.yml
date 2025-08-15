@@ -1,8 +1,8 @@
 name: build
 
 on:
-  push:
-    branches: [ "main" ]
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -28,6 +28,17 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/abelmv29/app-challenge:${{ github.sha }}
+          tags: |
+            ghcr.io/abelmv29/app-challenge:${{ github.event.release.tag_name }}
+            ghcr.io/abelmv29/app-challenge:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Trigger deploy workflow
+        uses: peter-evans/workflow-dispatch@v1
+        with:
+          repository: abelmv29/app-challenge
+          workflow: deploy.yml
+          ref: main
+          inputs:
+            tag_name: ${{ github.event.release.tag_name }}
