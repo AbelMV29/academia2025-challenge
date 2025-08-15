@@ -1,0 +1,60 @@
+name: deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Connect to server and pull image
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          # previo: loguearse en github container registry, ya que el pull de la imagen requiere autenticación
+          script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.GITHUB_ACTOR }} --password-stdin
+            docker pull ghcr.io/abelmv29/app-challenge:${{ github.sha }}
+
+      - name: Deploy with rolling update
+        id: deploy_step
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: |
+            set -e
+            echo "Iniciando rolling update..."
+            docker service update \
+              --image ghcr.io/abelmv29/app-challenge:${{ github.sha }} \
+              --update-parallelism 1 \
+              --update-delay 10s \
+              --update-order start-first \
+              --rollback \
+              app_challenge_app
+
+      - name: Discord Notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        uses: Ilshidur/action-discord@master
+        args: 'Deployment completed successfully! Release: ${{ github.event.release.tag_name }} - Commit: ${{ github.sha }}'
+
+      - name: Slack Notification
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook_type: incoming-webhook
+          payload: |
+            {
+              "text": "Deployment *${{ job.status }}* 🚀\nRelease: ${{ github.event.release.tag_name }}\nCommit: ${{ github.sha }}"
+            }

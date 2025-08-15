@@ -1,0 +1,89 @@
+services:
+  app-node:
+    build: .
+    ports:
+      - "3001:3000"
+    networks:
+      - net
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: challege_api
+      DB_USER_FILE: /run/secrets/db_user
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      PORT: 3000
+      TOKEN_EXPIRY_HOURS: 24
+    secrets:
+      - db_user
+      - db_password
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      resources:
+        #limite de consumo
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        #reserva minima garantizada
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      health_check:
+        test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"] 
+        interval: 1m30s
+        timeout: 10s
+        retries: 3
+        start_period: 40s
+
+  postgres:
+    image: postgres:17.5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - net
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB: challege_api
+    secrets:
+      - db_user
+      - db_password
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 1G
+        reservations:
+          cpus: '0.50'
+          memory: 512M
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 180s
+    health_check:
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user) -d challege_api"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+volumes:
+  postgres_data:
+
+networks:
+  net:
+    driver: overlay
+
+secrets:
+  db_user:
+    external: true
+  db_password:
+    external: true

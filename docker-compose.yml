@@ -1,0 +1,31 @@
+services:
+  app-node:
+    build: .
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env
+    networks:
+      - net
+    environment:
+      DB_HOST: postgres
+
+  postgres:
+    image: postgres:17.5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - net
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+
+networks:
+  net:
+    driver: bridge
