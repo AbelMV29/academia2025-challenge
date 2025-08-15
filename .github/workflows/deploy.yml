@@ -24,7 +24,7 @@ jobs:
           port: ${{ secrets.PORT }}
           # previo: loguearse en github container registry, ya que el pull de la imagen requiere autenticación
           script: |
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.GITHUB_ACTOR }} --password-stdin
+            echo ${{ secrets.GH_TOKEN }} | docker login ghcr.io -u ${{ secrets.GH_ACTOR }} --password-stdin
             docker pull ghcr.io/abelmv29/app-challenge:${{ github.event.inputs.tag_name }}
 
       - name: Deploy with rolling update
