@@ -12,4 +12,4 @@ receivers:
     slack_configs:
       - channel: '#alerts'
         send_resolved: true
-        api_url: 'https://hooks.slack.com/services/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'
+        api_url: /run/secrets/slack_webhook

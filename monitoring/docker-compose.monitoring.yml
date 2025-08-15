@@ -6,7 +6,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
       - prometheus-storage:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -17,6 +16,18 @@ services:
     ports:
       - 9090:9090
 
+  alertmanager:
+    image: prom/alertmanager:latest
+    restart: unless-stopped
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - app_challenge_net
+    ports:
+      - 9093:9093
+    secrets:
+      - slack_webhook
+
   grafana:
     image: grafana/grafana-enterprise
     restart: unless-stopped
@@ -26,6 +37,9 @@ services:
       - app_challenge_net
     ports:
       - 3000:3000
+secrets:
+  slack_webhook:
+    external: true
 
 volumes:
   grafana-storage:
