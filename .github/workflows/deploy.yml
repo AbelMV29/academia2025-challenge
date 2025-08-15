@@ -43,6 +43,13 @@ jobs:
               echo "Iniciando Docker Swarm..."
               docker swarm init
             fi
+            echo "Creando secrets de Docker si no existen..."
+            if ! docker secret ls --format '{{.Name}}' | grep -q '^db_user$'; then
+              echo "${{ secrets.DB_USER }}" | docker secret create db_user -
+            fi
+            if ! docker secret ls --format '{{.Name}}' | grep -q '^db_password$'; then
+              echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
+            fi
             echo "Comprobando si el servicio existe..."
             if ! docker service ls --filter name=app_challenge_app --format '{{.Name}}' | grep -q 'app_challenge_app'; then
               echo "Servicio no existe, deploy inicial..."

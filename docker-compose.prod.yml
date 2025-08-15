@@ -36,12 +36,6 @@ services:
         reservations:
           cpus: '0.20'
           memory: 256M
-      health_check:
-        test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"] 
-        interval: 1m30s
-        timeout: 10s
-        retries: 3
-        start_period: 40s
 
   postgres:
     image: postgres:17.5
@@ -69,12 +63,6 @@ services:
         delay: 10s
         max_attempts: 5
         window: 180s
-    health_check:
-      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user) -d challege_api"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 volumes:
   postgres_data:
 
