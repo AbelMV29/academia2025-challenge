@@ -1,0 +1,56 @@
+groups:
+  - name: api_alerts
+    rules:
+      - alert: HighAPIResponseTime
+        expr: http_request_duration_seconds_bucket{le="2"} < 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API response time > 2s"
+          description: "La API responde más lento de lo esperado"
+
+      - alert: HighAPIErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Error rate > 5% en 5 minutos"
+          description: "Demasiados errores 5xx en la API"
+
+  - name: system_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance)(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU usage > 80%"
+      
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memory usage > 90%"
+      
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes * 100) < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space < 10% disponible"
+
+  - name: postgres_alerts
+    rules:
+      - alert: HighPostgresConnections
+        expr: pg_stat_activity_count / pg_stat_activity_max * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connections > 80% del límite"

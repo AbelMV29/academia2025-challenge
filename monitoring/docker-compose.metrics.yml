@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  node-exporter:
+    image: prom/node-exporter:latest
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - app_challenge_net
+    ports:
+      - 9100:9100
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - app_challenge_net
+    ports:
+      - 8080:8080
+
+  postgres-exporter:
+    image: bitnami/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@app_challenge_postgres:5432/challege_api?sslmode=disable"
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      export DATA_SOURCE_NAME="postgresql://$(cat /run/secrets/db_user):$(cat /run/secrets/db_password)@app_challenge_postgres:5432/challege_api?sslmode=disable"
+      && /run.sh
+    networks:
+      - app_challenge_net
+    ports:
+      - 9187:9187
+
+networks:
+  app_challenge_net:
+    external: true
+
+secrets:
+  db_user:
+    external: true
+  db_password:
+    external: true
