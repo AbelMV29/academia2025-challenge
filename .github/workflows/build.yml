@@ -43,10 +43,11 @@ jobs:
     steps:
 
       - name: Trigger deploy workflow
-        uses: peter-evans/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          repository: abelmv29/app-challenge
-          workflow: deploy.yml
+          repo: ${{ github.repository }}
+          workflow: 'deploy.yml'
+          token: ${{ secrets.GH_TOKEN }}
           ref: main
           inputs: |
             tag_name: "${{ github.event.release.tag_name }}"
