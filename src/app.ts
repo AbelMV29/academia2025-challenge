@@ -6,6 +6,8 @@ import productRoutes from './routes/productRoutes';
 import { setupSwagger } from './config/swagger';
 import logger from './config/logger';
 import { httpLogger, errorLogger } from './middleware/logging';
+import { monitorMiddleware } from './middleware/monitor';
+import { register } from './config/monitoring';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -16,7 +18,7 @@ app.use(httpLogger);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(monitorMiddleware);
 // Configurar Swagger
 setupSwagger(app);
 
@@ -285,6 +287,15 @@ app.get('/health/live', (req: Request, res: Response) => {
   });
 });
 
+app.get('/metrics', async (_req: Request, res: Response) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
+
 /**
  * @swagger
  * /:
@@ -325,6 +336,9 @@ app.get('/', (req: Request, res: Response) => {
       ]
     },
     endpoints: {
+      monitor: {
+        'GET /metrics': 'Métricas de Prometheus para monitoreo'
+      },
       auth: {
         'POST /api/auth/login': 'Iniciar sesión (público)',
         'POST /api/auth/logout': 'Cerrar sesión (público)',
@@ -365,6 +379,7 @@ app.use('*', (req: Request, res: Response) => {
 
 // Middleware de logging de errores (debe ir antes del error handler)
 app.use(errorLogger);
+
 
 // Middleware global para manejo de errores
 app.use((err: Error, req: Request, res: Response, next: any) => {
