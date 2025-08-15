@@ -17,6 +17,7 @@ WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=build /app/package*.json ./
+RUN chown -R appuser:appgroup /app
 
 USER appuser
 RUN npm install --only=production
