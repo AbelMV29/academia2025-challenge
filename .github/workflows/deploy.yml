@@ -62,7 +62,7 @@ jobs:
                 --update-delay 10s \
                 --update-order start-first \
                 --rollback \
-                app_challenge_app
+                app_challenge_app-node
               fi
 
       - name: Discord Notification
