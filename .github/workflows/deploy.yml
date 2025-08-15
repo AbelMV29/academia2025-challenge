@@ -60,8 +60,6 @@ jobs:
                 --image ghcr.io/abelmv29/app-challenge:${{ github.event.inputs.tag_name }} \
                 --update-parallelism 1 \
                 --update-delay 10s \
-                --update-order start-first \
-                --rollback \
                 app_challenge_app-node
               fi
 
