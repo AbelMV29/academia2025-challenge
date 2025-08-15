@@ -38,14 +38,25 @@ jobs:
           script_stop: true
           script: |
             set -e
-            echo "Iniciando rolling update..."
-            docker service update \
-              --image ghcr.io/abelmv29/app-challenge:${{ github.event.inputs.tag_name }} \
-              --update-parallelism 1 \
-              --update-delay 10s \
-              --update-order start-first \
-              --rollback \
-              app_challenge_app
+            echo "Comprobando Swarm..."
+            if ! docker info | grep -q 'Swarm: active'; then
+              echo "Iniciando Docker Swarm..."
+              docker swarm init
+            fi
+            echo "Comprobando si el servicio existe..."
+            if ! docker service ls --filter name=app_challenge_app --format '{{.Name}}' | grep -q 'app_challenge_app'; then
+              echo "Servicio no existe, deploy inicial..."
+              docker stack deploy -c ~/production/docker-compose.prod.yml app_challenge
+            else
+              echo "Servicio existe, realizando rolling update..."
+              docker service update \
+                --image ghcr.io/abelmv29/app-challenge:${{ github.event.inputs.tag_name }} \
+                --update-parallelism 1 \
+                --update-delay 10s \
+                --update-order start-first \
+                --rollback \
+                app_challenge_app
+              fi
 
       - name: Discord Notification
         env:
