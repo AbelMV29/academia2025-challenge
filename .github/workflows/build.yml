@@ -34,6 +34,14 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  dispatch:
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write
+
+    steps:
+
       - name: Trigger deploy workflow
         uses: peter-evans/workflow-dispatch@v1
         with:

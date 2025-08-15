@@ -9,7 +9,7 @@ on:
         default: 'latest'
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-24.04
 
     steps:
