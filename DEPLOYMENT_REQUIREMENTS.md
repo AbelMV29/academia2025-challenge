@@ -9,26 +9,26 @@ Configurar un pipeline completo de CI/CD con GitHub Actions para hacer deploymen
 ### 1. 🐳 Containerización con Docker
 
 #### 1.1 Dockerfile para la API
-- [ ] Crear `Dockerfile` optimizado para producción
-- [ ] Usar imagen base `node:18-alpine` para reducir tamaño
-- [ ] Implementar multi-stage build para optimización
-- [ ] Configurar usuario no-root para seguridad
-- [ ] Exponer puerto 3000 de la aplicación
+- [X] Crear `Dockerfile` optimizado para producción
+- [X] Usar imagen base `node:18-alpine` para reducir tamaño
+- [X] Implementar multi-stage build para optimización
+- [X] Configurar usuario no-root para seguridad
+- [X] Exponer puerto 3000 de la aplicación
 
 #### 1.2 Docker Compose para Desarrollo
-- [ ] Crear `docker-compose.yml` para desarrollo local
-- [ ] Incluir servicios: API y PostgreSQL
-- [ ] Configurar volúmenes para persistencia de datos
-- [ ] Configurar redes para comunicación entre servicios
-- [ ] Variables de entorno para cada servicio
+- [X] Crear `docker-compose.yml` para desarrollo local
+- [X] Incluir servicios: API y PostgreSQL
+- [X] Configurar volúmenes para persistencia de datos
+- [X] Configurar redes para comunicación entre servicios
+- [X] Variables de entorno para cada servicio
 
 #### 1.3 Docker Compose para Producción
-- [ ] Crear `docker-compose.prod.yml` para Docker Swarm
-- [ ] Configurar replicas y estrategias de deployment
-- [ ] Implementar secrets para credenciales
-- [ ] Configurar limits de recursos (CPU, memoria)
-- [ ] Configurar restart policies
-- [ ] Configurar redes overlay para Swarm
+- [X] Crear `docker-compose.prod.yml` para Docker Swarm
+- [X] Configurar replicas y estrategias de deployment
+- [X] Implementar secrets para credenciales
+- [X] Configurar limits de recursos (CPU, memoria)
+- [X] Configurar restart policies
+- [X] Configurar redes overlay para Swarm
 
 ---
 
@@ -42,42 +42,42 @@ Configurar un pipeline completo de CI/CD con GitHub Actions para hacer deploymen
 - [ ] Ejecutar tests unitarios y de integración
 
 #### 2.2 Workflow de Build y Push
-- [ ] Crear `.github/workflows/build.yml`
-- [ ] Build de imagen Docker en cada release/tag
-- [ ] Push a Docker Hub o GitHub Container Registry
-- [ ] Cacheo de layers de Docker para optimización
+- [X] Crear `.github/workflows/build.yml`
+- [X] Build de imagen Docker en cada release/tag
+- [X] Push a Docker Hub o GitHub Container Registry
+- [X] Cacheo de layers de Docker para optimización
 
 #### 2.3 Workflow de Deployment
-- [ ] Crear `.github/workflows/deploy.yml`
-- [ ] Configurar SSH connection a VM Ubuntu 24.04
-- [ ] Pull de la nueva imagen en la VM
-- [ ] Deployment con Docker Swarm
-- [ ] Rolling updates sin downtime
-- [ ] Rollback automático en caso de falla
-- [ ] Notificaciones de deployment (Discord/Slack)
+- [X] Crear `.github/workflows/deploy.yml`
+- [X] Configurar SSH connection a VM Ubuntu 24.04
+- [X] Pull de la nueva imagen en la VM
+- [X] Deployment con Docker Swarm
+- [X] Rolling updates sin downtime
+- [X] Rollback automático en caso de falla
+- [X] Notificaciones de deployment (Discord/Slack)
 
 #### 2.4 Secrets y Variables
-- [ ] Configurar secrets en GitHub:
+- [X] Configurar secrets en GitHub:
   - SSH private key para VM
   - Docker registry credentials
   - Database credentials
   - API keys para monitoreo
-- [ ] Variables de entorno por ambiente
+- [X] Variables de entorno por ambiente
 
 ---
 
 ### 3. 🖥️ Configuración de VM Ubuntu 24.04
 
 #### 3.1 Setup Inicial de la VM
-- [ ] Instalar Docker Engine latest
-- [ ] Configurar Docker Swarm mode
+- [X] Instalar Docker Engine latest
+- [X] Configurar Docker Swarm mode
 - [ ] Configurar firewall (UFW) con puertos necesarios
-- [ ] Crear usuario específico para deployments
-- [ ] Configurar SSH keys para GitHub Actions
-- [ ] Instalar docker-compose
+- [X] Crear usuario específico para deployments
+- [X] Configurar SSH keys para GitHub Actions
+- [X] Instalar docker-compose
 
 #### 3.2 Configuración de Servicios Base
-- [ ] Setup de PostgreSQL como servicio de Docker
+- [X] Setup de PostgreSQL como servicio de Docker
 - [ ] Setup de Nginx como reverse proxy
 - [ ] Configuración de SSL/TLS con Let's Encrypt
 
@@ -86,37 +86,37 @@ Configurar un pipeline completo de CI/CD con GitHub Actions para hacer deploymen
 ### 4. 📊 Stack de Monitoreo con Grafana
 
 #### 4.1 Prometheus Setup
-- [ ] Configurar Prometheus como servicio Docker
-- [ ] Configurar scraping de métricas de la API
-- [ ] Configurar métricas de sistema (node_exporter)
-- [ ] Configurar métricas de Docker (cAdvisor)
-- [ ] Configurar métricas de PostgreSQL
-- [ ] Configurar retention policies
+- [X] Configurar Prometheus como servicio Docker
+- [X] Configurar scraping de métricas de la API
+- [X] Configurar métricas de sistema (node_exporter)
+- [X] Configurar métricas de Docker (cAdvisor)
+- [X] Configurar métricas de PostgreSQL
+- [X] Configurar retention policies
 
 #### 4.2 Grafana Configuration
-- [ ] Setup de Grafana como servicio Docker
-- [ ] Configurar data sources (Prometheus, Loki)
+- [X] Setup de Grafana como servicio Docker
+- [X] Configurar data sources (Prometheus, Loki)
 - [ ] Configurar authentication y usuarios
-- [ ] Configurar SMTP para alertas por email
-- [ ] Configurar themes y branding
+- [X] Configurar SMTP para alertas por email (elegí Slack para las alertas)
+- [X] Configurar themes y branding
 
 #### 4.3 Dashboards Requeridos
 
 ##### Dashboard 1: API Performance
-- [ ] Request rate (requests/segundo)
-- [ ] Response time percentiles (p50, p95, p99)
-- [ ] Error rate por endpoint
-- [ ] Status codes distribution
-- [ ] Top endpoints más utilizados
+- [X] Request rate (requests/segundo)
+- [X] Response time percentiles (p50, p95, p99)
+- [X] Error rate por endpoint
+- [X] Status codes distribution
+- [X] Top endpoints más utilizados
 - [ ] Active users concurrentes
 
 ##### Dashboard 2: Sistema y Infraestructura
-- [ ] CPU usage de la VM
-- [ ] Memory usage y swap
-- [ ] Disk I/O y espacio disponible
-- [ ] Network traffic
-- [ ] Docker containers status
-- [ ] PostgreSQL connections y performance
+- [X] CPU usage de la VM
+- [X] Memory usage y swap
+- [X] Disk I/O y espacio disponible
+- [X] Network traffic
+- [X] Docker containers status
+- [X] PostgreSQL connections y performance
 
 ##### Dashboard 3: Business Metrics
 - [ ] Registros de usuarios por día
