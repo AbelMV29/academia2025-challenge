@@ -35,10 +35,6 @@ services:
     image: bitnami/postgres-exporter:latest
     environment:
       DATA_SOURCE_NAME: "postgresql://postgres:postgres@app_challenge_postgres:5432/challege_api?sslmode=disable"
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      export DATA_SOURCE_NAME="postgresql://$(cat /run/secrets/db_user):$(cat /run/secrets/db_password)@app_challenge_postgres:5432/challege_api?sslmode=disable"
-      && /run.sh
     networks:
       - app_challenge_net
     ports:
